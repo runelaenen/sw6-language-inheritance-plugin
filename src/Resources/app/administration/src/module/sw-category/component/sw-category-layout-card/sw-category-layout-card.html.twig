@@ -1,0 +1,22 @@
+{% block sw_category_detail_layout_desc_actions %}
+    {% parent() %}
+
+    <div class="lae-category-layout-language-inheritance">
+        <mt-button
+            @click="openPageLanguageInheritanceModal = true"
+            :class="{'lae-category-layout-language-inheritance--btn-active': category?.customFields?.laeLanguageInheritance}"
+        >
+            <sw-icon
+                small
+                name="regular-globe-stand"
+            />
+            {{ $tc('lae-language-inheritance.sw-category.page-inheritance-button') }}
+        </mt-button>
+        <lae-language-inheritance-modal
+            v-if="openPageLanguageInheritanceModal"
+            :initLanguage="category?.customFields?.laeLanguageInheritance"
+            @select-language="onSelectLanguage"
+            @modal-close="openPageLanguageInheritanceModal = null"
+        />
+    </div>
+{% endblock %}

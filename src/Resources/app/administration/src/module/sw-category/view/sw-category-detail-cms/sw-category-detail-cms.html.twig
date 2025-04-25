@@ -1,0 +1,34 @@
+{% block sw_category_detail_cms_form %}
+    <div class="lae-language-inheritance--cms-page-wrapper">
+        <div
+            class="lae-language-inheritance--cms-page-active-notice"
+            v-if="category?.customFields?.laeLanguageInheritance"
+        >
+            <p class="outline">
+                {{ $tc('lae-language-inheritance.sw-category.inheritance-active') }}
+            </p>
+            <mt-button
+                @click="openPageLanguageInheritanceModal = true
+"
+            >
+                <sw-icon
+                    small
+                    name="regular-globe-stand"
+                />
+                {{ $tc('lae-language-inheritance.sw-cms-page-form.button') }}
+            </mt-button>
+        </div>
+        <div
+            :class="{'lae-language-inheritance--cms-page-active': category?.customFields?.laeLanguageInheritance}"
+        >
+            {% parent %}
+        </div>
+    </div>
+
+    <lae-language-inheritance-modal
+        v-if="openPageLanguageInheritanceModal"
+        :initLanguage="category?.customFields?.laeLanguageInheritance"
+        @select-language="onSelectLanguage"
+        @modal-close="openPageLanguageInheritanceModal = null"
+    />
+{% endblock %}

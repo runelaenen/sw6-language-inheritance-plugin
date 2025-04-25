@@ -1,0 +1,25 @@
+<sw-modal
+    :title="$tc('lae-language-inheritance.modal.title')"
+    @modal-close="onModalClose"
+>
+    <sw-entity-single-select
+        entity="language"
+        :label="$tc('lae-language-inheritance.modal.label')"
+        v-model:value="selectedLanguage"
+    />
+    <template #modal-footer>
+        <mt-button
+            @click="resetLanguage"
+            size="default"
+        >
+            {{ $tc('lae-language-inheritance.modal.resetButton') }}
+        </mt-button>
+        <mt-button
+            @click="selectLanguage"
+            variant="primary"
+            size="default"
+        >
+            {{ $tc('lae-language-inheritance.modal.saveButton') }}
+        </mt-button>
+    </template>
+</sw-modal>

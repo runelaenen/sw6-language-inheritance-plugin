@@ -1,0 +1,18 @@
+{
+    "lae-language-inheritance": {
+        "modal": {
+            "title": "Language inheritance",
+            "label": "Inherit from",
+            "resetButton": "Reset/disable inheritance",
+            "saveButton": "Inherit from selected language"
+        },
+        "sw-cms-page-form": {
+            "inheritance-active": "Language inheritance is active for this CMS Slot.",
+            "button": "Language inheritance"
+        },
+        "sw-category": {
+            "inheritance-active": "Language inheritance is active for this CMS page.",
+            "page-inheritance-button": "Page Language Inheritance"
+        }
+    }
+}

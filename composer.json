@@ -1,0 +1,45 @@
+{
+  "name": "laenen/sw6-language-inheritance-plugin",
+  "description": "laenen/sw6-language-inheritance-plugin",
+  "type": "shopware-platform-plugin",
+  "version": "1.0.0",
+  "license": "MIT",
+  "require": {
+    "shopware/core": "~6.6.0"
+  },
+  "extra": {
+    "shopware-plugin-class": "Laenen\\LanguageInheritance\\LaenenLanguageInheritance",
+    "label": {
+      "de-DE": "CMS Language Inheritance plugin",
+      "en-GB": "CMS Language Inheritance plugin"
+    },
+    "description": {
+      "de-DE": "Verknüpfen Sie CMS-Inhalte zwischen Sprachen (z. B. fr-BE mit fr-FR). Vererbung ist im Admin klar sichtbar – spart Zeit und verhindert doppelte Inhalte.",
+      "en-GB": "Easily link languages in CMS pages or blocks. Show shared content (e.g. fr-BE from fr-FR) and clearly see the inheritance in the admin. Save time and avoid duplication."
+    },
+    "supportLink": {
+      "de-DE": "https://github.com/runelaenen/sw6-language-inheritance-plugin/issues",
+      "en-GB": "https://github.com/runelaenen/sw6-language-inheritance-plugin/issues"
+    },
+    "manufacturerLink": {
+      "de-DE": "https://github.com/runelaenen",
+      "en-GB": "https://github.com/runelaenen"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Laenen\\LanguageInheritance\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Laenen\\LanguageInheritance\\Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Rune Laenen",
+      "email": "rune@laenen.me"
+    }
+  ]
+}

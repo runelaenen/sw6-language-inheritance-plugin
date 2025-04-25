@@ -1,0 +1,44 @@
+.lae-language-inheritance--card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.lae-language-inheritance--active {
+    color: purple;
+}
+
+.lae-language-inheritance--config-wrapper {
+    position: relative;
+
+    .lae-language-inheritance--config-active {
+        opacity: 0.5;
+        pointer-events: none;
+        filter: blur(2px);
+
+        min-height: 100px;
+    }
+
+    .lae-language-inheritance--config-active-notice {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 1;
+
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+
+        p.outline {
+            -webkit-text-stroke-width: 6px;
+            -webkit-text-stroke-color: white;
+            paint-order: stroke fill;
+        }
+    }
+}

@@ -1,0 +1,52 @@
+{% block sw_cms_page_form_element_config %}
+    <div class="lae-language-inheritance--card-header">
+        <strong>
+            {{ $tc(cmsElements[element.type].label) }}
+        </strong>
+        <mt-button
+            :square="true"
+            @click="laeLanguageInheritanceModal = element"
+            :class="{'lae-language-inheritance--active': element.config?.laeLanguageInheritance?.value}"
+        >
+            <sw-icon
+                small
+                name="regular-globe-stand"
+            />
+        </mt-button>
+    </div>
+
+    <div class="lae-language-inheritance--config-wrapper">
+        <div
+            class="lae-language-inheritance--config-active-notice"
+            v-if="element.config?.laeLanguageInheritance?.value"
+        >
+            <p class="outline">
+                {{ $tc('lae-language-inheritance.sw-cms-page-form.inheritance-active') }}
+            </p>
+            <mt-button
+                @click="laeLanguageInheritanceModal = element"
+            >
+                <sw-icon
+                    small
+                    name="regular-globe-stand"
+                />
+                {{ $tc('lae-language-inheritance.sw-cms-page-form.button') }}
+            </mt-button>
+        </div>
+        <div
+            :class="{'lae-language-inheritance--config-active': element.config?.laeLanguageInheritance?.value}"
+        >
+            {% parent %}
+        </div>
+    </div>
+{% endblock %}
+{% block sw_cms_page_form_content %}
+    {% parent() %}
+
+    <lae-language-inheritance-modal
+        v-if="laeLanguageInheritanceModal"
+        :initLanguage="laeLanguageInheritanceModal.config?.laeLanguageInheritance?.value"
+        @select-language="onSelectLanguage"
+        @modal-close="laeLanguageInheritanceModal = null"
+    />
+{% endblock %}
