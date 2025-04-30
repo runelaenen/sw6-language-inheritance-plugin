@@ -58,7 +58,7 @@ class SalesChannelCmsPageLoader implements SalesChannelCmsPageLoaderInterface
     /**
      * @param array<string, array<mixed>> $config
      *
-     * @return array<string, array<mixed>>
+     * @return ?array<string, array<mixed>>
      */
     private function handleConfigInheritance(?array $config, ResolverContext $resolverContext): ?array
     {

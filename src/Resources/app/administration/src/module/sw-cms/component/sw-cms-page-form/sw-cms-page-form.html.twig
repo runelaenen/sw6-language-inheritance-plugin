@@ -1,7 +1,7 @@
 {% block sw_cms_page_form_element_config %}
     <div class="lae-language-inheritance--card-header">
         <strong>
-            {{ $tc(cmsElements[element.type].label) }}
+            {{ $tc(cmsElements[element.type]?.label ?? '') }}
         </strong>
         <mt-button
             :square="true"
