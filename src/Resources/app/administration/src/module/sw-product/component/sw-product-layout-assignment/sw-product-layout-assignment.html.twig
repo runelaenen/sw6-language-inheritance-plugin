@@ -1,0 +1,22 @@
+{% block sw_product_layout_assignment_buttons %}
+    {% parent() %}
+
+    <div class="lae-product-layout-language-inheritance">
+        <mt-button
+                @click="openPageLanguageInheritanceModal = true"
+                :class="{'lae-product-layout-language-inheritance--btn-active': product?.customFields?.laeLanguageInheritance}"
+        >
+            <sw-icon
+                    small
+                    name="regular-globe-stand"
+            />
+            {{ $tc('lae-language-inheritance.sw-product.page-inheritance-button') }}
+        </mt-button>
+        <lae-language-inheritance-modal
+                v-if="openPageLanguageInheritanceModal"
+                :initLanguage="product?.customFields?.laeLanguageInheritance"
+                @select-language="onSelectLanguage"
+                @modal-close="openPageLanguageInheritanceModal = null"
+        />
+    </div>
+{% endblock %}

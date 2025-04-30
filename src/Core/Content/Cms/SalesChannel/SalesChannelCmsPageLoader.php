@@ -3,6 +3,7 @@
 namespace Laenen\LanguageInheritance\Core\Content\Cms\SalesChannel;
 
 use Laenen\LanguageInheritance\Core\Content\Cms\SalesChannel\LanguageInheritance\AbstractTranslatedSlotConfigLoader;
+use Laenen\LanguageInheritance\Core\Content\Cms\SalesChannel\LanguageInheritance\EntityIdTranslatedSlotConfigLoaderInterface;
 use Shopware\Core\Content\Cms\DataResolver\ResolverContext\EntityResolverContext;
 use Shopware\Core\Content\Cms\DataResolver\ResolverContext\ResolverContext;
 use Shopware\Core\Content\Cms\SalesChannel\SalesChannelCmsPageLoaderInterface;
@@ -111,12 +112,17 @@ class SalesChannelCmsPageLoader implements SalesChannelCmsPageLoaderInterface
         if (!\array_key_exists($type, $this->translatedSlotConfigLoaders)) {
             return [];
         }
-        /** @var AbstractTranslatedSlotConfigLoader $config */
-        $config = $this->translatedSlotConfigLoaders[$type];
+        /** @var AbstractTranslatedSlotConfigLoader $configLoader */
+        $configLoader = $this->translatedSlotConfigLoaders[$type];
 
-        return $config->get(
+        $entityId = $resolverContext->getEntity()->getUniqueIdentifier();
+        if ($configLoader instanceof EntityIdTranslatedSlotConfigLoaderInterface) {
+            $entityId = $configLoader->getEntityId($resolverContext->getEntity()) ?? $entityId;
+        }
+
+        return $configLoader->get(
             $languageIds,
-            $resolverContext->getEntity()->getUniqueIdentifier(),
+            $entityId,
             $resolverContext->getEntity()->getVersionId()
         );
     }

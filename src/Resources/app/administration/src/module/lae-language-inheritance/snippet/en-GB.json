@@ -13,6 +13,10 @@
         "sw-category": {
             "inheritance-active": "Language inheritance is active for this CMS page.",
             "page-inheritance-button": "Page Language Inheritance"
+        },
+        "sw-product": {
+            "inheritance-active": "Language inheritance is active for this CMS page.",
+            "page-inheritance-button": "Page Language Inheritance"
         }
     }
 }

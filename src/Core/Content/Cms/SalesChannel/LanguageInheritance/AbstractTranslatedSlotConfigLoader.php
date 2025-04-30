@@ -47,7 +47,7 @@ abstract readonly class AbstractTranslatedSlotConfigLoader
 
         foreach ($translations as $languageId => $slotConfig) {
             try {
-                $translations[$languageId] = json_decode($slotConfig, true, 512, \JSON_THROW_ON_ERROR) ?? [];
+                $translations[$languageId] = json_decode($slotConfig ?? 'null', true, 512, \JSON_THROW_ON_ERROR) ?? [];
             } catch (\JsonException) {
                 // ignore...
             }
