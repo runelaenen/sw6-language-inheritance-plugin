@@ -2,8 +2,9 @@
 
 namespace Laenen\LanguageInheritance\Core\Content\Cms\SalesChannel;
 
+use Doctrine\DBAL\ArrayParameterType;
+use Doctrine\DBAL\Connection;
 use Laenen\LanguageInheritance\Core\Content\Cms\SalesChannel\LanguageInheritance\AbstractTranslatedSlotConfigLoader;
-use Laenen\LanguageInheritance\Core\Content\Cms\SalesChannel\LanguageInheritance\EntityIdTranslatedSlotConfigLoaderInterface;
 use Shopware\Core\Content\Cms\DataResolver\ResolverContext\EntityResolverContext;
 use Shopware\Core\Content\Cms\DataResolver\ResolverContext\ResolverContext;
 use Shopware\Core\Content\Cms\SalesChannel\SalesChannelCmsPageLoaderInterface;
@@ -31,7 +32,8 @@ class SalesChannelCmsPageLoader implements SalesChannelCmsPageLoaderInterface
         #[AutowireDecorated]
         private readonly SalesChannelCmsPageLoaderInterface $decorated,
         #[AutowireIterator(AbstractTranslatedSlotConfigLoader::class, indexAttribute: 'key')]
-        iterable $translatedSlotConfigLoaders
+        iterable $translatedSlotConfigLoaders,
+        private readonly Connection $connection
     ) {
         $this->translatedSlotConfigLoaders = $translatedSlotConfigLoaders instanceof \Traversable ?
             iterator_to_array($translatedSlotConfigLoaders) :
@@ -58,7 +60,7 @@ class SalesChannelCmsPageLoader implements SalesChannelCmsPageLoaderInterface
     /**
      * @param array<string, array<mixed>> $config
      *
-     * @return ?array<string, array<mixed>>
+     * @return array<string, array<mixed>>
      */
     private function handleConfigInheritance(?array $config, ResolverContext $resolverContext): ?array
     {
@@ -90,8 +92,40 @@ class SalesChannelCmsPageLoader implements SalesChannelCmsPageLoaderInterface
         $languageIds = array_values($languagesToLoad);
         $overrides = $this->loadConfigs($languageIds, $resolverContext);
 
+        $missingOverrides = [];
         foreach ($languagesToLoad as $slotId => $languageId) {
-            $config[$slotId] = $overrides[$languageId][$slotId] ?? $config[$slotId];
+            if (array_key_exists($slotId, $overrides[$languageId])) {
+                $config[$slotId] = $overrides[$languageId][$slotId] ?? $config[$slotId];
+                continue;
+            }
+
+            $missingOverrides[$languageId][] = $slotId;
+        }
+
+        foreach ($missingOverrides as $languageId => $slotIds) {
+            $missingTranslations = $this->connection->fetchAllKeyValue(<<<SQL
+SELECT LOWER(HEX(cms_slot_id)), config 
+FROM cms_slot_translation
+WHERE cms_slot_id IN (:slotIds)
+AND language_id = :language
+AND cms_slot_version_id = :version;
+SQL, [
+                'slotIds' => Uuid::fromHexToBytesList($slotIds),
+                'language' => Uuid::fromHexToBytes($languageId),
+                'version' => Uuid::fromHexToBytes($resolverContext->getSalesChannelContext()->getVersionId()),
+            ], [
+                'slotIds' => ArrayParameterType::STRING
+            ]);
+
+            foreach ($missingTranslations as $slotId => $slotConfig) {
+                try {
+                    $slotConfig = json_decode($slotConfig, true, 512, \JSON_THROW_ON_ERROR) ?? [];
+
+                    $config[$slotId] = $slotConfig;
+                } catch (\JsonException) {
+                    // ignore...
+                }
+            }
         }
 
         return $config;
@@ -112,17 +146,12 @@ class SalesChannelCmsPageLoader implements SalesChannelCmsPageLoaderInterface
         if (!\array_key_exists($type, $this->translatedSlotConfigLoaders)) {
             return [];
         }
-        /** @var AbstractTranslatedSlotConfigLoader $configLoader */
-        $configLoader = $this->translatedSlotConfigLoaders[$type];
+        /** @var AbstractTranslatedSlotConfigLoader $config */
+        $config = $this->translatedSlotConfigLoaders[$type];
 
-        $entityId = $resolverContext->getEntity()->getUniqueIdentifier();
-        if ($configLoader instanceof EntityIdTranslatedSlotConfigLoaderInterface) {
-            $entityId = $configLoader->getEntityId($resolverContext->getEntity()) ?? $entityId;
-        }
-
-        return $configLoader->get(
+        return $config->get(
             $languageIds,
-            $entityId,
+            $resolverContext->getEntity()->getUniqueIdentifier(),
             $resolverContext->getEntity()->getVersionId()
         );
     }
