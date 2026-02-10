@@ -1,3 +1,4 @@
 src/Resources/public/administration/
 src/Resources/public/static/
 src/Resources/app/storefront/dist/storefront/*
+src/Resources/app/administration/.tmp/
